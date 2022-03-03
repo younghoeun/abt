@@ -1,0 +1,4 @@
+// TO BUILD
+make
+// TO UPLOAD CODE
+sudo avrdude -c linuxgpio -p atmega32u4 -v -U flash:w:build-leonardo/<code>.hex:i
