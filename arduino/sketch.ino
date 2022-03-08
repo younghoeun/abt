@@ -1,14 +1,29 @@
+int X_ENABLE = 3;
+int X_DIR = 10;
+int X_STEP = 11;
+int Y_ENABLE = 8;
+int Y_DIR = 2;
+int Y_STEP = 9;
+
+
 void setup() {
   // initialize the serial port:
   Serial1.begin(9600);
 
   // pinout
-  pinMode(3,OUTPUT);
-  pinMode(10,OUTPUT);
-  pinMode(11,OUTPUT);
+  pinMode(X_ENABLE,OUTPUT);
+  pinMode(X_DIR,OUTPUT);
+  pinMode(X_STEP,OUTPUT);
 
-  digitalWrite(3,HIGH);
-  digitalWrite(10,HIGH);
+  pinMode(Y_ENABLE,OUTPUT);
+  pinMode(Y_DIR,OUTPUT);
+  pinMode(Y_STEP,OUTPUT);
+
+  digitalWrite(X_ENABLE,HIGH);
+  digitalWrite(X_DIR,HIGH);
+
+  digitalWrite(Y_ENABLE,HIGH);
+  digitalWrite(Y_DIR,HIGH);
 
   pinMode(LED_BUILTIN, OUTPUT) ;
 
@@ -21,31 +36,43 @@ void loop() {
     char cmd = Serial1.read() ;
     if (cmd == '1'){
       digitalWrite(LED_BUILTIN, HIGH) ;
-      digitalWrite(3, LOW) ;
-      digitalWrite(10, HIGH) ;
+      digitalWrite(X_ENABLE, LOW) ;
+      digitalWrite(X_DIR, HIGH) ;
+
+      digitalWrite(Y_ENABLE, LOW) ;
+      digitalWrite(Y_DIR, HIGH) ;
 
       for (int i = 0; i < 1000; i++){
-        digitalWrite(11,HIGH) ;
+        digitalWrite(X_STEP,HIGH) ;
+        digitalWrite(Y_STEP,HIGH) ;
         delayMicroseconds(100) ;
-        digitalWrite(11,LOW) ;
+        digitalWrite(X_STEP,LOW) ;
+        digitalWrite(Y_STEP,LOW) ;
         delayMicroseconds(100) ;
       }
       Serial1.println("Forward") ;
-      digitalWrite(3, HIGH) ;
+      digitalWrite(X_ENABLE, HIGH) ;
+      digitalWrite(Y_ENABLE, HIGH) ;
     }
     if (cmd == '2'){
       digitalWrite(LED_BUILTIN, LOW) ;
-      digitalWrite(3, LOW) ;
-      digitalWrite(10, LOW) ;
+      digitalWrite(X_ENABLE, LOW) ;
+      digitalWrite(X_DIR, LOW) ;
+
+      digitalWrite(Y_ENABLE, LOW) ;
+      digitalWrite(Y_DIR, LOW) ;
 
       for (int i = 0; i < 1000; i++){
-        digitalWrite(11,HIGH) ;
+        digitalWrite(X_STEP,HIGH) ;
+        digitalWrite(Y_STEP,HIGH) ;
         delayMicroseconds(100) ;
-        digitalWrite(11,LOW) ;
+        digitalWrite(X_STEP,LOW) ;
+        digitalWrite(Y_STEP,LOW) ;
         delayMicroseconds(100) ;
       }
       Serial1.println("Backward") ;
-      digitalWrite(3, HIGH) ;
+      digitalWrite(X_ENABLE, HIGH) ;
+      digitalWrite(Y_ENABLE, HIGH) ;
     }
     if (cmd == 'a'){
 	for (int i = 0; i < 5; i++){
@@ -54,6 +81,9 @@ void loop() {
 	digitalWrite(LED_BUILTIN, LOW) ;
 	delay(100) ;
 	}
+    }
+    if (cmd == 'z'){
+	digitalWrite(X_STEP,HIGH) ;
     }
 
   }
