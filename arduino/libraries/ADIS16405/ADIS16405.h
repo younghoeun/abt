@@ -1,4 +1,4 @@
-#ifndef ADIS16364_h
+#ifndef ADIS16405_h
 #define ADIS16405_h
 #include "Arduino.h"
 #include <SPI.h>

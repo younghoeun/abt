@@ -32,6 +32,7 @@ ADIS16405::~ADIS16405(){
   // Close SPI bus
   SPI.end();
 }
+
 ////////////////////////////////////////////////////////////////////////////
 //                        void xacc_read()
 ////////////////////////////////////////////////////////////////////////////
@@ -58,7 +59,6 @@ void ADIS16405::xacc_read(){
   Serial.println(xacc,5);
   digitalWrite(CS,HIGH);
 }
-
 
 ////////////////////////////////////////////////////////////////////////////
 //                        void burst_read()
@@ -429,10 +429,6 @@ void ADIS16405::gyro_prec_null(){
   write(GLOB_CMD, 0xBE10);
   delay(30000);
 }
-
-
-
-
 
 void ADIS16405::sens_avg(){
   write(SENS_AVG, 0x0106);

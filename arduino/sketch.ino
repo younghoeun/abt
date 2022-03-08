@@ -11,11 +11,15 @@
 #define IMU_CS    5
 #define IMU_RST   7
 
-void blink(){
+ADIS16405 iSensor(IMU_CS) ;
+
+void blink(int i){
+  for(int j=0; j<i; j++){
   digitalWrite(LED_BUILTIN, HIGH) ;
   delay(100) ;
   digitalWrite(LED_BUILTIN, LOW) ;
   delay(100) ;
+  }
 }
 
 void setup() {
@@ -25,6 +29,7 @@ void setup() {
 
   // initialize serial port:
   Serial1.begin(9600);
+  Serial.begin(9600) ;
 
   // linear actuator
   pinMode(X_ENABLE,OUTPUT);
@@ -39,25 +44,31 @@ void setup() {
   digitalWrite(X_DIR,HIGH);
   digitalWrite(Y_ENABLE,HIGH);
   digitalWrite(Y_DIR,HIGH);
-  blink() ;
+  blink(1) ;
 
   // IMU
+  SPI.setDataMode(SPI_MODE3) ;
   pinMode(IMU_RST, OUTPUT) ;
   digitalWrite(IMU_RST, LOW) ; 
   delay(100) ;
   digitalWrite(IMU_RST, HIGH) ;
   delay(100) ;
-
+  iSensor.factory_reset() ;
+  delay(100) ;
+  iSensor.sens_avg() ;
+  delay(100) ;
   iSensor.write(0x20, 0x1ffb) ;
   delay(100) ;
   iSensor.write(0x22, 0x1FFE) ;
   delay(100) ;
-  blink() ;
-  blink() ;  
+//  iSensor.gyro_prec_null() ;
+ 
+  blink(2) ;
+
 }
 
 void loop() {
-  //
+  // linear actuator
   if (Serial1.available() > 0){
     char cmd = Serial1.read() ;
     if (cmd == '1'){
@@ -111,8 +122,25 @@ void loop() {
     if (cmd == 'z'){
 	digitalWrite(X_STEP,HIGH) ;
     }
-
+    
+    if (cmd == 'q'){
+      iSensor.burst_read() ;
+      for (int i = 0; i < 12; i++){
+        Serial1.print(iSensor.sensor[i], 6) ;
+        Serial1.print(" ") ;
+      }
+      Serial1.println();
+    }
   }
+
+  iSensor.burst_read() ;
+    for (int i = 0; i < 12; i++){
+      Serial.print(iSensor.sensor[i], 6) ;
+      Serial.print(" ") ;
+    }
+  Serial.println();
+  delay(100) ;
+
 }
 
 
