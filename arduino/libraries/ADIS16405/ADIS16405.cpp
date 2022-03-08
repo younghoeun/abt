@@ -1,4 +1,3 @@
-
 #include "ADIS16405.h"
 
 
@@ -7,7 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////
 // CS - Chip select pin
 ////////////////////////////////////////////////////////////////////////////
-ADIS16364::ADIS16364(int CS){
+ADIS16405::ADIS16405(int CS){
   // Set CS pin to specified value
   this->CS = CS;
   // Begin SPI
@@ -27,7 +26,7 @@ ADIS16364::ADIS16364(int CS){
 ////////////////////////////////////////////////////////////////////////////
 //                           Destructor
 ////////////////////////////////////////////////////////////////////////////
-ADIS16364::~ADIS16364(){
+ADIS16405::~ADIS16405(){
   // Put device to sleep
   sleep();
   // Close SPI bus
@@ -38,7 +37,7 @@ ADIS16364::~ADIS16364(){
 ////////////////////////////////////////////////////////////////////////////
 //read xacc reg only, and stores the output into the sensor[] array
 ///////////////////////////////////////////////////////////////////////////
-void ADIS16364::xacc_read(){
+void ADIS16405::xacc_read(){
   unsigned char bits = 14;
   unsigned char upper,lower,mask;
   unsigned int raw;
@@ -66,7 +65,7 @@ void ADIS16364::xacc_read(){
 ////////////////////////////////////////////////////////////////////////////
 // Performs a burst read, and stores the output into the sensor[] array
 ////////////////////////////////////////////////////////////////////////////
-void ADIS16364::burst_read(){
+void ADIS16405::burst_read(){
   unsigned char bits[12] = {14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 12 ,12};
   unsigned char offset_bin[12] = {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
 
@@ -101,7 +100,7 @@ void ADIS16364::burst_read(){
 ////////////////////////////////////////////////////////////////////////////
 // TODO: Add other registers
 ////////////////////////////////////////////////////////////////////////////
-void ADIS16364::debug(){
+void ADIS16405::debug(){
   
   // print all readable registers
   Serial.println("Device ID:");
@@ -175,7 +174,7 @@ void ADIS16364::debug(){
 ////////////////////////////////////////////////////////////////////////////
 // TODO: Add support for alarm/error flag
 ////////////////////////////////////////////////////////////////////////////
-unsigned int ADIS16364::read(unsigned char nbits, unsigned char reg){
+unsigned int ADIS16405::read(unsigned char nbits, unsigned char reg){
   // initialize variables
   unsigned char upper, lower, mask; 
 
@@ -205,7 +204,7 @@ unsigned int ADIS16364::read(unsigned char nbits, unsigned char reg){
 // reg - Address of the register you're writing to
 // value - The value you want to set the register to
 ////////////////////////////////////////////////////////////////////////////
-void ADIS16364::write(unsigned char reg, unsigned int value){
+void ADIS16405::write(unsigned char reg, unsigned int value){
   // set lower byte
   digitalWrite(CS, LOW);
   SPI.transfer(reg | 0x80);
@@ -228,7 +227,7 @@ void ADIS16364::write(unsigned char reg, unsigned int value){
 // num - Two's complement form number you're trying to convert
 // return - Signed double precision representation
 ////////////////////////////////////////////////////////////////////////////
-double ADIS16364::signed_double(unsigned char nbits, unsigned int num){
+double ADIS16405::signed_double(unsigned char nbits, unsigned int num){
   unsigned int mask, padding;
   // select correct mask
   mask = 1 << (nbits -1);
@@ -246,7 +245,7 @@ double ADIS16364::signed_double(unsigned char nbits, unsigned int num){
 // num - Signed double form of number you're trying to convert
 // return - Two's complement representation
 ////////////////////////////////////////////////////////////////////////////
-unsigned int ADIS16364::twos_comp(double num){
+unsigned int ADIS16405::twos_comp(double num){
   unsigned int raw;
   
   if(num < 0){
@@ -264,7 +263,7 @@ unsigned int ADIS16364::twos_comp(double num){
 ////////////////////////////////////////////////////////////////////////////
 // return - Device ID
 ////////////////////////////////////////////////////////////////////////////
-unsigned int ADIS16364::device_id(){
+unsigned int ADIS16405::device_id(){
   // Read 14 bits from the PROD_ID register
   return read(14, PROD_ID); 
 }
@@ -276,7 +275,7 @@ unsigned int ADIS16364::device_id(){
 ////////////////////////////////////////////////////////////////////////////
 // return - Value of the X - axis gyro offset, in deg/sec
 ////////////////////////////////////////////////////////////////////////////
-double ADIS16364::x_gyro_offset(){
+double ADIS16405::x_gyro_offset(){
   unsigned int raw_value = read(13, XGYRO_OFF);
   return signed_double(13, raw_value)*0.0125;
 }
@@ -288,7 +287,7 @@ double ADIS16364::x_gyro_offset(){
 ////////////////////////////////////////////////////////////////////////////
 // return - Value of the Y - axis gyro offset, in deg/sec
 ////////////////////////////////////////////////////////////////////////////
-double ADIS16364::y_gyro_offset(){
+double ADIS16405::y_gyro_offset(){
   unsigned int raw_value = read(13, YGYRO_OFF);
   return signed_double(13, raw_value)*0.0125;
 }
@@ -300,7 +299,7 @@ double ADIS16364::y_gyro_offset(){
 ////////////////////////////////////////////////////////////////////////////
 // return - Value of the Z - axis gyro offset, in deg/sec
 ////////////////////////////////////////////////////////////////////////////
-double ADIS16364::z_gyro_offset(){
+double ADIS16405::z_gyro_offset(){
   unsigned int raw_value = read(13, ZGYRO_OFF);
   return signed_double(13, raw_value)*0.0125;
 }
@@ -312,7 +311,7 @@ double ADIS16364::z_gyro_offset(){
 ////////////////////////////////////////////////////////////////////////////
 // return - Value of the X - axis accel offset, in g force
 ////////////////////////////////////////////////////////////////////////////
-double ADIS16364::x_accel_offset(){
+double ADIS16405::x_accel_offset(){
   unsigned int raw_value = read(12, XACCL_OFF);
   return signed_double(12, raw_value);
 }
@@ -324,7 +323,7 @@ double ADIS16364::x_accel_offset(){
 ////////////////////////////////////////////////////////////////////////////
 // return - Value of the Y - axis accel offset, in g force
 ////////////////////////////////////////////////////////////////////////////
-double ADIS16364::y_accel_offset(){
+double ADIS16405::y_accel_offset(){
   unsigned int raw_value = read(12, YACCL_OFF);
   return signed_double(12, raw_value);
 }
@@ -336,7 +335,7 @@ double ADIS16364::y_accel_offset(){
 ////////////////////////////////////////////////////////////////////////////
 // return - Value of the Z - axis accel offset, in g force
 ////////////////////////////////////////////////////////////////////////////
-double ADIS16364::z_accel_offset(){
+double ADIS16405::z_accel_offset(){
   unsigned int raw_value = read(12, ZACCL_OFF);
   return signed_double(12, raw_value);
 }
@@ -348,7 +347,7 @@ double ADIS16364::z_accel_offset(){
 ////////////////////////////////////////////////////////////////////////////
 // value - The amount of offset you want, in deg/sec
 ////////////////////////////////////////////////////////////////////////////
-void ADIS16364::x_gyro_offset(double value){
+void ADIS16405::x_gyro_offset(double value){
   write(XGYRO_OFF, twos_comp(value/0.0125));
 }
 
@@ -359,7 +358,7 @@ void ADIS16364::x_gyro_offset(double value){
 ////////////////////////////////////////////////////////////////////////////
 // value - The amount of offset you want, in deg/sec
 ////////////////////////////////////////////////////////////////////////////
-void ADIS16364::y_gyro_offset(double value){
+void ADIS16405::y_gyro_offset(double value){
   write(YGYRO_OFF, twos_comp(value/0.0125));
 }
 
@@ -370,7 +369,7 @@ void ADIS16364::y_gyro_offset(double value){
 ////////////////////////////////////////////////////////////////////////////
 // value - The amount of offset you want, in deg/sec
 ////////////////////////////////////////////////////////////////////////////
-void ADIS16364::z_gyro_offset(double value){
+void ADIS16405::z_gyro_offset(double value){
   write(ZGYRO_OFF,twos_comp(value/0.0125));
 }
 
@@ -381,7 +380,7 @@ void ADIS16364::z_gyro_offset(double value){
 ////////////////////////////////////////////////////////////////////////////
 // value - The amount of offset you want, in g force
 ////////////////////////////////////////////////////////////////////////////
-void ADIS16364::x_accel_offset(double value){
+void ADIS16405::x_accel_offset(double value){
   write(XACCL_OFF, twos_comp(value));
 }
 
@@ -392,7 +391,7 @@ void ADIS16364::x_accel_offset(double value){
 ////////////////////////////////////////////////////////////////////////////
 // value - The amount of offset you want, in g force
 ////////////////////////////////////////////////////////////////////////////
-void ADIS16364::y_accel_offset(double value){
+void ADIS16405::y_accel_offset(double value){
   write(YACCL_OFF, twos_comp(value));
 }
 
@@ -403,7 +402,7 @@ void ADIS16364::y_accel_offset(double value){
 ////////////////////////////////////////////////////////////////////////////
 // value - The amount of offset you want, in g force
 ////////////////////////////////////////////////////////////////////////////
-void ADIS16364::z_accel_offset(double value){
+void ADIS16405::z_accel_offset(double value){
   write(ZACCL_OFF, twos_comp(value));
 }
 
@@ -414,7 +413,7 @@ void ADIS16364::z_accel_offset(double value){
 ////////////////////////////////////////////////////////////////////////////
 // NOTES: Not Tested!
 ////////////////////////////////////////////////////////////////////////////
-void ADIS16364::gyro_null(){
+void ADIS16405::gyro_null(){
   write(GLOB_CMD, 0x0001);
   delay(50);
 }
@@ -426,7 +425,7 @@ void ADIS16364::gyro_null(){
 ////////////////////////////////////////////////////////////////////////////
 // NOTES: Not Tested!
 ////////////////////////////////////////////////////////////////////////////
-void ADIS16364::gyro_prec_null(){
+void ADIS16405::gyro_prec_null(){
   write(GLOB_CMD, 0xBE10);
   delay(30000);
 }
@@ -435,7 +434,7 @@ void ADIS16364::gyro_prec_null(){
 
 
 
-void ADIS16364::sens_avg(){
+void ADIS16405::sens_avg(){
   write(SENS_AVG, 0x0106);
   delay(50);
   /*
@@ -459,7 +458,7 @@ void ADIS16364::sens_avg(){
 ////////////////////////////////////////////////////////////////////////////
 // NOTES: Not Tested!
 ////////////////////////////////////////////////////////////////////////////
-void ADIS16364::low_power_mode(){
+void ADIS16405::low_power_mode(){
   // Set low power mode
   write(SMPL_PRD, 0x000A);
   // Set low power mode flag
@@ -477,7 +476,7 @@ void ADIS16364::low_power_mode(){
 ////////////////////////////////////////////////////////////////////////////
 // NOTES: Not Tested!
 ////////////////////////////////////////////////////////////////////////////
-void ADIS16364::normal_mode(){
+void ADIS16405::normal_mode(){
   // Set low power mode
   write(SMPL_PRD, 0x0001);
   // Unset low power mode flag
@@ -496,7 +495,7 @@ void ADIS16364::normal_mode(){
 ////////////////////////////////////////////////////////////////////////////
 // NOTES: Not Tested!
 ////////////////////////////////////////////////////////////////////////////
-void ADIS16364::sleep(){
+void ADIS16405::sleep(){
   write(SLP_CNT, 0x0100);
 }
 
@@ -509,7 +508,7 @@ void ADIS16364::sleep(){
 ////////////////////////////////////////////////////////////////////////////
 // NOTES: Not Tested!
 ////////////////////////////////////////////////////////////////////////////
-void ADIS16364::sleep(double dur){
+void ADIS16405::sleep(double dur){
   write(SLP_CNT, ( (unsigned int)(dur / 0.5) ) & 0x00FF);
 }
 
@@ -520,7 +519,7 @@ void ADIS16364::sleep(double dur){
 ////////////////////////////////////////////////////////////////////////////
 // NOTES: Not Tested!
 ////////////////////////////////////////////////////////////////////////////
-void ADIS16364::wake(){
+void ADIS16405::wake(){
     digitalWrite(CS, LOW);
     delay_cycle();
     digitalWrite(CS, HIGH);
@@ -531,7 +530,7 @@ void ADIS16364::wake(){
 ////////////////////////////////////////////////////////////////////////////
 // Perform factory reset on iSensor
 ////////////////////////////////////////////////////////////////////////////
-void ADIS16364::factory_reset(){
+void ADIS16405::factory_reset(){
   write(GLOB_CMD, 0xbe02);
   delay(50);
 }
@@ -549,7 +548,7 @@ void ADIS16364::factory_reset(){
 ////////////////////////////////////////////////////////////////////////////
 // Sets SPI to normal mode
 ////////////////////////////////////////////////////////////////////////////
-void ADIS16364::set_SPI(void){
+void ADIS16405::set_SPI(void){
   // Set to MSB first
   SPI.setBitOrder(MSBFIRST);
   // Set to SPI mode 3
@@ -563,7 +562,7 @@ void ADIS16364::set_SPI(void){
 ////////////////////////////////////////////////////////////////////////////
 // Delays Arduino for once SCLK cycle
 ////////////////////////////////////////////////////////////////////////////
-void ADIS16364::delay_cycle(){
+void ADIS16405::delay_cycle(){
   if(low_power){
     // if low power mode, delay for 1/250e3
     delayMicroseconds(4);

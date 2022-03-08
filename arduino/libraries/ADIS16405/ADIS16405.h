@@ -1,6 +1,5 @@
-
 #ifndef ADIS16364_h
-#define ADIS16364_h
+#define ADIS16405_h
 #include "Arduino.h"
 #include <SPI.h>
 
@@ -55,16 +54,16 @@
 #define PROD_ID     0x56  // Product identification, ADIS16364  See Table 32
 #define SERIAL_NUM  0x58  // Serial number  See Table 32
 
-// ADIS16364 class definition
-class ADIS16364{
+// ADIS16405 class definition
+class ADIS16405{
 
 public:
 
   double sensor[12];
   double xacc;
   // Constructor with configurable CS pin, and Destructor
-  ADIS16364(int CS);
-  ~ADIS16364();
+  ADIS16405(int CS);
+  ~ADIS16405();
 
   // Burst read
   void burst_read();

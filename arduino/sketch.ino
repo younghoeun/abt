@@ -1,16 +1,32 @@
-int X_ENABLE = 3;
-int X_DIR = 10;
-int X_STEP = 11;
-int Y_ENABLE = 8;
-int Y_DIR = 2;
-int Y_STEP = 9;
+#include <ADIS16405.h>
+#include <SPI.h>
 
+// pin definition
+#define X_ENABLE  3
+#define X_DIR     10
+#define X_STEP    11
+#define Y_ENABLE  8
+#define Y_DIR     2
+#define Y_STEP    9
+#define IMU_CS    5
+#define IMU_RST   7
+
+void blink(){
+  digitalWrite(LED_BUILTIN, HIGH) ;
+  delay(100) ;
+  digitalWrite(LED_BUILTIN, LOW) ;
+  delay(100) ;
+}
 
 void setup() {
-  // initialize the serial port:
+  // led
+  pinMode(LED_BUILTIN, OUTPUT) ;
+  digitalWrite(LED_BUILTIN, LOW);
+
+  // initialize serial port:
   Serial1.begin(9600);
 
-  // pinout
+  // linear actuator
   pinMode(X_ENABLE,OUTPUT);
   pinMode(X_DIR,OUTPUT);
   pinMode(X_STEP,OUTPUT);
@@ -21,13 +37,23 @@ void setup() {
 
   digitalWrite(X_ENABLE,HIGH);
   digitalWrite(X_DIR,HIGH);
-
   digitalWrite(Y_ENABLE,HIGH);
   digitalWrite(Y_DIR,HIGH);
+  blink() ;
 
-  pinMode(LED_BUILTIN, OUTPUT) ;
+  // IMU
+  pinMode(IMU_RST, OUTPUT) ;
+  digitalWrite(IMU_RST, LOW) ; 
+  delay(100) ;
+  digitalWrite(IMU_RST, HIGH) ;
+  delay(100) ;
 
-  digitalWrite(LED_BUILTIN, LOW);
+  iSensor.write(0x20, 0x1ffb) ;
+  delay(100) ;
+  iSensor.write(0x22, 0x1FFE) ;
+  delay(100) ;
+  blink() ;
+  blink() ;  
 }
 
 void loop() {
@@ -88,4 +114,6 @@ void loop() {
 
   }
 }
+
+
 
