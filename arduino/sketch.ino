@@ -25,22 +25,13 @@ int spd = 1000;
 ADIS16405 iSensor(IMU_CS) ;
 abt abt ;
 
-void blink(int i){
-  for(int j=0; j<i; j++){
-  digitalWrite(LED_BUILTIN, HIGH) ;
-  delay(100) ;
-  digitalWrite(LED_BUILTIN, LOW) ;
-  delay(100) ;
-  }
-}
-
 void setup() {
-  // initialise led
-  pinMode(LED_BUILTIN, OUTPUT) ;
-  digitalWrite(LED_BUILTIN, LOW);
-
   // initialise serial port:
   Serial1.begin(115200);
+
+  // initialise led
+//  pinMode(LED_BUILTIN, OUTPUT) ;
+//  digitalWrite(LED_BUILTIN, LOW);
 
   // initialise linear actuator
   for (int i=0; i<3; i++){
@@ -74,11 +65,13 @@ void loop() {
   // linear actuator
   if (Serial1.available() > 0){
     char cmd = Serial1.read() ;
-    if (cmd == '1'){
+    if (cmd == 'x+'){
       abt.spin(X_ENABLE,X_DIR,X_STEP,1,1000,1000);
+      Serial1.println(cmd);
     }
     if (cmd == '2'){
       abt.spin(X_ENABLE,X_DIR,X_STEP,0,1000,1000);
+      Serial1.println(cmd);
     }
     if (cmd == '3'){
       abt.spin(Y_ENABLE,Y_DIR,Y_STEP,1,1000,1000);

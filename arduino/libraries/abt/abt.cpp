@@ -1,7 +1,9 @@
 #include "abt.h"
 
 abt::abt(){
-
+  // initialise led
+  pinMode(LED_BUILTIN, OUTPUT) ;
+  digitalWrite(LED_BUILTIN, LOW);
 }
 
 void abt::blink(int i){
@@ -16,7 +18,7 @@ void abt::blink(int i){
 void abt::spin(int enablePIN, int dirPIN, int stepPIN, bool dir, int spd, int step){
   digitalWrite(enablePIN,LOW) ;
   digitalWrite(dirPIN, dir) ;
-  
+
   for(int i=0; i<step; i++){
     digitalWrite(stepPIN,HIGH) ;
     delayMicroseconds(spd) ;

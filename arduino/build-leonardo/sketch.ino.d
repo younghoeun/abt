@@ -1,4 +1,4 @@
-build-leonardo/run.ino.o: run.ino \
+build-leonardo/sketch.ino.o: sketch.ino \
  /usr/share/arduino/hardware/arduino/avr/cores/arduino/Arduino.h \
  /usr/share/arduino/hardware/arduino/avr/cores/arduino/binary.h \
  /usr/share/arduino/hardware/arduino/avr/cores/arduino/WCharacter.h \
