@@ -8,8 +8,17 @@
 #define Y_ENABLE  8
 #define Y_DIR     2
 #define Y_STEP    9
+#define Z_ENABLE  6
+#define Z_DIR     4
+#define Z_STEP    12
+
 #define IMU_CS    5
 #define IMU_RST   7
+
+int spd = 1000;
+int EN[3] = {3,8,6} ;
+int DIR[3] = {10,2,4} ;
+int STEP[3] = {11,9,12} ;
 
 ADIS16405 iSensor(IMU_CS) ;
 
@@ -23,30 +32,24 @@ void blink(int i){
 }
 
 void setup() {
-  // led
+  // initialise led
   pinMode(LED_BUILTIN, OUTPUT) ;
   digitalWrite(LED_BUILTIN, LOW);
 
-  // initialize serial port:
-  Serial1.begin(9600);
-  Serial.begin(9600) ;
+  // initialise serial port:
+  Serial1.begin(115200);
 
-  // linear actuator
-  pinMode(X_ENABLE,OUTPUT);
-  pinMode(X_DIR,OUTPUT);
-  pinMode(X_STEP,OUTPUT);
-
-  pinMode(Y_ENABLE,OUTPUT);
-  pinMode(Y_DIR,OUTPUT);
-  pinMode(Y_STEP,OUTPUT);
-
-  digitalWrite(X_ENABLE,HIGH);
-  digitalWrite(X_DIR,HIGH);
-  digitalWrite(Y_ENABLE,HIGH);
-  digitalWrite(Y_DIR,HIGH);
+  // initialise linear actuator
+  for (int i=0; i<3; i++){
+    pinMode(EN[i],OUTPUT) ;
+    pinMode(DIR[i],OUTPUT) ;
+    pinMode(STEP[i],OUTPUT) ;
+    digitalWrite(EN[i],HIGH) ;
+    digitalWrite(DIR[i],HIGH) ;
+  }
   blink(1) ;
 
-  // IMU
+  // initialise IMU
   SPI.setDataMode(SPI_MODE3) ;
   pinMode(IMU_RST, OUTPUT) ;
   digitalWrite(IMU_RST, LOW) ; 
@@ -67,50 +70,90 @@ void setup() {
 
 }
 
+char cmd[10];
+
 void loop() {
   // linear actuator
   if (Serial1.available() > 0){
     char cmd = Serial1.read() ;
     if (cmd == '1'){
-      digitalWrite(LED_BUILTIN, HIGH) ;
+      blink(1);
       digitalWrite(X_ENABLE, LOW) ;
       digitalWrite(X_DIR, HIGH) ;
+      for (int i = 0; i < 1000; i++){
+        digitalWrite(X_STEP,HIGH) ;
+        delayMicroseconds(spd) ;
+        digitalWrite(X_STEP,LOW) ;
+        delayMicroseconds(spd) ;
+      }
+      digitalWrite(X_ENABLE, HIGH) ;
+    }
+    if (cmd == '2'){
+      blink(1);
+      digitalWrite(X_ENABLE, LOW) ;
+      digitalWrite(X_DIR, LOW) ;
 
+      for (int i = 0; i < 1000; i++){
+        digitalWrite(X_STEP,HIGH) ;
+        delayMicroseconds(spd) ;
+        digitalWrite(X_STEP,LOW) ;
+        delayMicroseconds(spd) ;
+      }
+      digitalWrite(X_ENABLE, HIGH) ;
+    }
+    if (cmd == '3'){
+      blink(1);
       digitalWrite(Y_ENABLE, LOW) ;
       digitalWrite(Y_DIR, HIGH) ;
 
       for (int i = 0; i < 1000; i++){
-        digitalWrite(X_STEP,HIGH) ;
         digitalWrite(Y_STEP,HIGH) ;
-        delayMicroseconds(100) ;
-        digitalWrite(X_STEP,LOW) ;
+        delayMicroseconds(spd) ;
         digitalWrite(Y_STEP,LOW) ;
-        delayMicroseconds(100) ;
+        delayMicroseconds(spd) ;
       }
-      Serial1.println("Forward") ;
-      digitalWrite(X_ENABLE, HIGH) ;
       digitalWrite(Y_ENABLE, HIGH) ;
     }
-    if (cmd == '2'){
-      digitalWrite(LED_BUILTIN, LOW) ;
-      digitalWrite(X_ENABLE, LOW) ;
-      digitalWrite(X_DIR, LOW) ;
-
+    if (cmd == '4'){
+      blink(1);
       digitalWrite(Y_ENABLE, LOW) ;
       digitalWrite(Y_DIR, LOW) ;
 
       for (int i = 0; i < 1000; i++){
-        digitalWrite(X_STEP,HIGH) ;
         digitalWrite(Y_STEP,HIGH) ;
-        delayMicroseconds(100) ;
-        digitalWrite(X_STEP,LOW) ;
+        delayMicroseconds(spd) ;
         digitalWrite(Y_STEP,LOW) ;
-        delayMicroseconds(100) ;
+        delayMicroseconds(spd) ;
       }
-      Serial1.println("Backward") ;
-      digitalWrite(X_ENABLE, HIGH) ;
       digitalWrite(Y_ENABLE, HIGH) ;
     }
+    if (cmd == '5'){
+      blink(1);
+      digitalWrite(Z_ENABLE, LOW) ;
+      digitalWrite(Z_DIR, HIGH) ;
+
+      for (int i = 0; i < 1000; i++){
+        digitalWrite(Z_STEP,HIGH) ;
+        delayMicroseconds(spd) ;
+        digitalWrite(Z_STEP,LOW) ;
+        delayMicroseconds(spd) ;
+      }
+      digitalWrite(Z_ENABLE, HIGH) ;
+    }
+    if (cmd == '6'){
+      blink(1);
+      digitalWrite(Z_ENABLE, LOW) ;
+      digitalWrite(Z_DIR, LOW) ;
+
+      for (int i = 0; i < 1000; i++){
+        digitalWrite(Z_STEP,HIGH) ;
+        delayMicroseconds(spd) ;
+        digitalWrite(Z_STEP,LOW) ;
+        delayMicroseconds(spd) ;
+      }
+      digitalWrite(Z_ENABLE, HIGH) ;
+    }
+
     if (cmd == 'a'){
 	for (int i = 0; i < 5; i++){
 	digitalWrite(LED_BUILTIN, HIGH) ;
@@ -126,20 +169,15 @@ void loop() {
     if (cmd == 'q'){
       iSensor.burst_read() ;
       for (int i = 0; i < 12; i++){
-        Serial1.print(iSensor.sensor[i], 6) ;
-        Serial1.print(" ") ;
+        Serial1.print(iSensor.sensor[i], 3) ;
+        Serial1.print(",") ;
       }
       Serial1.println();
     }
+
   }
 
-  iSensor.burst_read() ;
-    for (int i = 0; i < 12; i++){
-      Serial.print(iSensor.sensor[i], 6) ;
-      Serial.print(" ") ;
-    }
-  Serial.println();
-  delay(100) ;
+  delay(1) ;
 
 }
 
