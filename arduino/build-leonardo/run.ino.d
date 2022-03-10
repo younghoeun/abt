@@ -1,6 +1,4 @@
-build-leonardo/userlibs/ADIS16405/ADIS16364.cpp.o: \
- /home/pi/abt/arduino/libraries/ADIS16405/ADIS16364.cpp \
- /home/pi/abt/arduino/libraries/ADIS16405/ADIS16405.h \
+build-leonardo/run.ino.o: run.ino \
  /usr/share/arduino/hardware/arduino/avr/cores/arduino/Arduino.h \
  /usr/share/arduino/hardware/arduino/avr/cores/arduino/binary.h \
  /usr/share/arduino/hardware/arduino/avr/cores/arduino/WCharacter.h \
@@ -14,4 +12,6 @@ build-leonardo/userlibs/ADIS16405/ADIS16364.cpp.o: \
  /usr/share/arduino/hardware/arduino/avr/cores/arduino/USBDesc.h \
  /usr/share/arduino/hardware/arduino/avr/cores/arduino/USBCore.h \
  /usr/share/arduino/hardware/arduino/avr/variants/leonardo/pins_arduino.h \
- /usr/share/arduino/hardware/arduino/avr/libraries/SPI/src/SPI.h
+ /home/pi/abt/arduino/libraries/ADIS16405/ADIS16405.h \
+ /usr/share/arduino/hardware/arduino/avr/libraries/SPI/src/SPI.h \
+ /home/pi/abt/arduino/libraries/abt/abt.h

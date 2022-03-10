@@ -1,6 +1,6 @@
 #ifndef ADIS16405_h
 #define ADIS16405_h
-#include "Arduino.h"
+#include <Arduino.h>
 #include <SPI.h>
 
 // convient macros for accessing burst mode sensor data

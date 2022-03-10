@@ -1,26 +1,11 @@
 #include <ADIS16405.h>
 #include <SPI.h>
-
-// pin definition
-#define X_ENABLE  3
-#define X_DIR     10
-#define X_STEP    11
-#define Y_ENABLE  8
-#define Y_DIR     2
-#define Y_STEP    9
-#define Z_ENABLE  6
-#define Z_DIR     4
-#define Z_STEP    12
-
-#define IMU_CS    5
-#define IMU_RST   7
+#include <abt.h>
 
 int spd = 1000;
-int EN[3] = {3,8,6} ;
-int DIR[3] = {10,2,4} ;
-int STEP[3] = {11,9,12} ;
 
 ADIS16405 iSensor(IMU_CS) ;
+abt abt ;
 
 void blink(int i){
   for(int j=0; j<i; j++){
@@ -40,22 +25,21 @@ void setup() {
   Serial1.begin(115200);
 
   // initialise linear actuator
-  for (int i=0; i<3; i++){
-    pinMode(EN[i],OUTPUT) ;
-    pinMode(DIR[i],OUTPUT) ;
-    pinMode(STEP[i],OUTPUT) ;
-    digitalWrite(EN[i],HIGH) ;
-    digitalWrite(DIR[i],HIGH) ;
-  }
-  blink(1) ;
+//  for (int i=0; i<3; i++){
+//    pinMode(EN[i],OUTPUT) ;
+//    pinMode(DIR[i],OUTPUT) ;
+//    pinMode(STEP[i],OUTPUT) ;
+//    digitalWrite(EN[i],HIGH) ;
+//    digitalWrite(DIR[i],HIGH) ;
+//  }
 
   // initialise IMU
-  SPI.setDataMode(SPI_MODE3) ;
-  pinMode(IMU_RST, OUTPUT) ;
-  digitalWrite(IMU_RST, LOW) ; 
-  delay(100) ;
-  digitalWrite(IMU_RST, HIGH) ;
-  delay(100) ;
+//  SPI.setDataMode(SPI_MODE3) ;
+//  pinMode(IMU_RST, OUTPUT) ;
+//  digitalWrite(IMU_RST, LOW) ; 
+//  delay(100) ;
+//  digitalWrite(IMU_RST, HIGH) ;
+//  delay(100) ;
   iSensor.factory_reset() ;
   delay(100) ;
   iSensor.sens_avg() ;
@@ -66,18 +50,19 @@ void setup() {
   delay(100) ;
 //  iSensor.gyro_prec_null() ;
  
-  blink(2) ;
-
 }
 
-char cmd[10];
-
 void loop() {
+  blink(1);
+//  abt.blink();
+//  Serial1.println("hi");
+//  delay(100);
+
   // linear actuator
   if (Serial1.available() > 0){
     char cmd = Serial1.read() ;
     if (cmd == '1'){
-      blink(1);
+
       digitalWrite(X_ENABLE, LOW) ;
       digitalWrite(X_DIR, HIGH) ;
       for (int i = 0; i < 1000; i++){
@@ -89,7 +74,7 @@ void loop() {
       digitalWrite(X_ENABLE, HIGH) ;
     }
     if (cmd == '2'){
-      blink(1);
+
       digitalWrite(X_ENABLE, LOW) ;
       digitalWrite(X_DIR, LOW) ;
 
@@ -102,7 +87,6 @@ void loop() {
       digitalWrite(X_ENABLE, HIGH) ;
     }
     if (cmd == '3'){
-      blink(1);
       digitalWrite(Y_ENABLE, LOW) ;
       digitalWrite(Y_DIR, HIGH) ;
 
@@ -115,7 +99,6 @@ void loop() {
       digitalWrite(Y_ENABLE, HIGH) ;
     }
     if (cmd == '4'){
-      blink(1);
       digitalWrite(Y_ENABLE, LOW) ;
       digitalWrite(Y_DIR, LOW) ;
 
@@ -128,7 +111,6 @@ void loop() {
       digitalWrite(Y_ENABLE, HIGH) ;
     }
     if (cmd == '5'){
-      blink(1);
       digitalWrite(Z_ENABLE, LOW) ;
       digitalWrite(Z_DIR, HIGH) ;
 
@@ -141,7 +123,6 @@ void loop() {
       digitalWrite(Z_ENABLE, HIGH) ;
     }
     if (cmd == '6'){
-      blink(1);
       digitalWrite(Z_ENABLE, LOW) ;
       digitalWrite(Z_DIR, LOW) ;
 
@@ -176,8 +157,6 @@ void loop() {
     }
 
   }
-
-  delay(1) ;
 
 }
 

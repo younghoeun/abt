@@ -1,4 +1,6 @@
-build-leonardo/sketch.ino.o: sketch.ino \
+build-leonardo/userlibs/abt/abt.cpp.o: \
+ /home/pi/abt/arduino/libraries/abt/abt.cpp \
+ /home/pi/abt/arduino/libraries/abt/abt.h \
  /usr/share/arduino/hardware/arduino/avr/cores/arduino/Arduino.h \
  /usr/share/arduino/hardware/arduino/avr/cores/arduino/binary.h \
  /usr/share/arduino/hardware/arduino/avr/cores/arduino/WCharacter.h \
@@ -11,6 +13,4 @@ build-leonardo/sketch.ino.o: sketch.ino \
  /usr/share/arduino/hardware/arduino/avr/cores/arduino/Arduino.h \
  /usr/share/arduino/hardware/arduino/avr/cores/arduino/USBDesc.h \
  /usr/share/arduino/hardware/arduino/avr/cores/arduino/USBCore.h \
- /usr/share/arduino/hardware/arduino/avr/variants/leonardo/pins_arduino.h \
- /home/pi/abt/arduino/libraries/ADIS16405/ADIS16405.h \
- /usr/share/arduino/hardware/arduino/avr/libraries/SPI/src/SPI.h
+ /usr/share/arduino/hardware/arduino/avr/variants/leonardo/pins_arduino.h
