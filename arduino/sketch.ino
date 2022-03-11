@@ -62,16 +62,23 @@ void setup() {
 }
 
 void loop() {
+
+  abt.receive() ;
+
+  if (abt.newData == true) {
+      Serial1.print("Received: ") ;
+      Serial1.println(abt.receivedChars) ;
+  } 
+ 
+/*
   // linear actuator
   if (Serial1.available() > 0){
     char cmd = Serial1.read() ;
-    if (cmd == 'x+'){
+    if (cmd == '1'){
       abt.spin(X_ENABLE,X_DIR,X_STEP,1,1000,1000);
-      Serial1.println(cmd);
     }
     if (cmd == '2'){
       abt.spin(X_ENABLE,X_DIR,X_STEP,0,1000,1000);
-      Serial1.println(cmd);
     }
     if (cmd == '3'){
       abt.spin(Y_ENABLE,Y_DIR,Y_STEP,1,1000,1000);
@@ -90,6 +97,7 @@ void loop() {
       abt.blink(3);
     }
     
+// transmit imu reading to pi
     if (cmd == 'q'){
       iSensor.burst_read() ;
       for (int i = 0; i < 12; i++){
@@ -99,6 +107,7 @@ void loop() {
       Serial1.println();
     }
   }
+*/
 
 }
 

@@ -5,4 +5,5 @@ git push -u origin main
 // todo
 - move setup to abt header
 - class
-- char array -> serial
++ char array -> serial
+- parse data type
