@@ -3,24 +3,12 @@
 #include <abt.h>
 
 // pin definition
-#define X_ENABLE  3
-#define X_DIR     10
-#define X_STEP    11
-#define Y_ENABLE  8
-#define Y_DIR     2
-#define Y_STEP    9
-#define Z_ENABLE  6
-#define Z_DIR     4
-#define Z_STEP    12
-
 #define IMU_CS    5
 #define IMU_RST   7
 
-int EN[3] = {X_ENABLE,Y_ENABLE,Z_ENABLE} ;
-int DIR[3] = {X_DIR,Y_DIR,Z_DIR} ;
-int STEP[3] = {X_STEP,Y_STEP,Z_STEP} ;
-
-int spd = 1000;
+//int EN[3] = {X_ENABLE,Y_ENABLE,Z_ENABLE} ;
+//int DIR[3] = {X_DIR,Y_DIR,Z_DIR} ;
+//int STEP[3] = {X_STEP,Y_STEP,Z_STEP} ;
 
 ADIS16405 iSensor(IMU_CS) ;
 abt abt ;
@@ -33,6 +21,7 @@ void setup() {
 //  pinMode(LED_BUILTIN, OUTPUT) ;
 //  digitalWrite(LED_BUILTIN, LOW);
 
+/*
   // initialise linear actuator
   for (int i=0; i<3; i++){
     pinMode(EN[i],OUTPUT) ;
@@ -41,6 +30,7 @@ void setup() {
     digitalWrite(EN[i],HIGH) ;
     digitalWrite(DIR[i],HIGH) ;
   }
+*/
 
   // initialise IMU
   SPI.setDataMode(SPI_MODE3) ;
@@ -65,40 +55,34 @@ void loop() {
 
   abt.receive() ;
 
-  if (abt.newData == true) {
-      Serial1.print("Received: ") ;
-      Serial1.println(abt.receivedChars) ;
-  } 
- 
-/*
-  // linear actuator
-  if (Serial1.available() > 0){
-    char cmd = Serial1.read() ;
-    if (cmd == '1'){
-      abt.spin(X_ENABLE,X_DIR,X_STEP,1,1000,1000);
+  if(abt.newData == true){
+    if (abt.receivedChars[0] == 'x'){
+      abt.motorNum = 0;
+      if (abt.receivedChars[1] == '+'){
+        abt.dir = true ;
+        abt.spin();
+      }
+      if (abt.receivedChars[1] == '-'){
+        abt.dir = false ;
+        abt.spin();
+      }
     }
-    if (cmd == '2'){
-      abt.spin(X_ENABLE,X_DIR,X_STEP,0,1000,1000);
+    if (abt.receivedChars[0] == '+'){
+      abt.spd = abt.spd - 100 ;
+        if (abt.spd <= 0){
+	  abt.spd = 50;
+	}
     }
-    if (cmd == '3'){
-      abt.spin(Y_ENABLE,Y_DIR,Y_STEP,1,1000,1000);
+    if (abt.receivedChars[0] == '-'){
+      abt.spd = abt.spd + 100 ;
     }
-    if (cmd == '4'){
-      abt.spin(Y_ENABLE,Y_DIR,Y_STEP,0,1000,1000);
-    }
-    if (cmd == '5'){
-      abt.spin(Z_ENABLE,Z_DIR,Z_STEP,1,1000,1000);
-    }
-    if (cmd == '6'){
-      abt.spin(Z_ENABLE,Z_DIR,Z_STEP,0,1000,1000);
-    }
-
-    if (cmd == 'a'){
+  
+    if (abt.receivedChars[0] == 'a'){
       abt.blink(3);
     }
-    
+
 // transmit imu reading to pi
-    if (cmd == 'q'){
+    if (abt.receivedChars[0] == 'q'){
       iSensor.burst_read() ;
       for (int i = 0; i < 12; i++){
         Serial1.print(iSensor.sensor[i], 3) ;
@@ -106,8 +90,18 @@ void loop() {
       }
       Serial1.println();
     }
+
+// telemetry
+    if (abt.receivedChars[0] == 't'){
+      Serial1.println("Motor Parameters") ;
+      Serial1.print("Speed: ") ;
+      Serial1.println(abt.spd) ;
+      Serial1.print("Step: ") ;
+      Serial1.println(abt.step) ;
+    }
+
   }
-*/
+
 
 }
 

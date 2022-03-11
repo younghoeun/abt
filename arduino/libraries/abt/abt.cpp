@@ -1,9 +1,26 @@
-#include "abt.h"
+#include <abt.h>
+
+int EN[3] = {X_ENABLE,Y_ENABLE,Z_ENABLE} ;
+int DIR[3] = {X_DIR,Y_DIR,Z_DIR} ;
+int STEP[3] = {X_STEP,Y_STEP,Z_STEP} ;
 
 abt::abt(){
   // initialise led
   pinMode(LED_BUILTIN, OUTPUT) ;
   digitalWrite(LED_BUILTIN, LOW);
+
+  // initialise linear actuator
+  for (int i=0; i<3; i++){
+    pinMode(EN[i],OUTPUT) ;
+    pinMode(DIR[i],OUTPUT) ;
+    pinMode(STEP[i],OUTPUT) ;
+    digitalWrite(EN[i],HIGH) ;
+    digitalWrite(DIR[i],HIGH) ;
+  }
+
+  // default parameters
+  step = 1600;
+  spd = 1000 ;
 }
 
 void abt::blink(int i){
@@ -15,34 +32,34 @@ void abt::blink(int i){
   }
 }
 
-void abt::spin(int enablePIN, int dirPIN, int stepPIN, bool dir, int spd, int step){
-  digitalWrite(enablePIN,LOW) ;
-  digitalWrite(dirPIN, dir) ;
+void abt::spin(){
+
+  digitalWrite(EN[motorNum],LOW) ;
+  digitalWrite(DIR[motorNum], dir) ;
 
   for(int i=0; i<step; i++){
-    digitalWrite(stepPIN,HIGH) ;
+    digitalWrite(STEP[motorNum],HIGH) ;
     delayMicroseconds(spd) ;
-    digitalWrite(stepPIN,LOW) ;
+    digitalWrite(STEP[motorNum],LOW) ;
     delayMicroseconds(spd) ;
   }
-  digitalWrite(enablePIN, HIGH) ;
+  digitalWrite(EN[motorNum], HIGH) ;
 }
 
 void abt::receive() {
   static boolean recvInProgress = false;
   static byte ndx = 0;
-  char startMarker = '<';
-  char endMarker = '>';
+//  char startMarker = '<';
+  char endMarker = '\r';
   char rc;
 
-  const byte numChars = 32;
-//  char receivedChars[numChars];
+  const byte numChars = 8;
 
   newData = false;
 
   while (Serial1.available() > 0 && newData == false) {
     rc = Serial1.read();
-    if (recvInProgress == true) {
+//    if (recvInProgress == true) {
       if (rc != endMarker) {
         receivedChars[ndx] = rc;
         ndx++;
@@ -56,11 +73,11 @@ void abt::receive() {
         ndx = 0;
         newData = true;
       }
-    }
+//    }
 
-    else if (rc == startMarker) {
-      recvInProgress = true;
-    }
+//    else if (rc == startMarker) {
+//      recvInProgress = true;
+//    }
   }
   
 }
