@@ -26,6 +26,7 @@ public:
   // linear actuator
   int motorNum ;
   boolean dir ;
+  boolean enable ;
   int spd ;
   int step ;
   void spin();

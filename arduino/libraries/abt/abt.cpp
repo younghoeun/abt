@@ -19,7 +19,7 @@ abt::abt(){
   }
 
   // default parameters
-  step = 1600;
+  step = 160; // 1 rev = 1600
   spd = 1000 ;
 }
 
@@ -34,7 +34,7 @@ void abt::blink(int i){
 
 void abt::spin(){
 
-  digitalWrite(EN[motorNum],LOW) ;
+  digitalWrite(EN[motorNum],enable) ;
   digitalWrite(DIR[motorNum], dir) ;
 
   for(int i=0; i<step; i++){
